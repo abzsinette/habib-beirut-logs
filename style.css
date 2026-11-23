@@ -1,25 +1,14 @@
 /* Layout idea: one phone-width column, sticky date header, bottom tab bar; each paper sheet becomes a list of large tap targets. */
+/* Habib Beirut colours: red and white. One light theme on purpose (it is a brand look, not a dark-mode app). */
 :root{
-  --bg:#f2f4f7; --surface:#ffffff; --ink:#17212b; --muted:#5b6978; --line:#dce2e9;
-  --accent:#1f4e8c; --accent-soft:#e3ecf8; --on-accent:#ffffff;
-  --ok:#1b774c; --ok-soft:#e1f2e9; --warn:#9a5c00; --warn-soft:#fbeed3; --crit:#b3261e; --crit-soft:#fbe5e3;
+  color-scheme:light;
+  --red:#b5121b; --red-dark:#8c0c13;
+  --bg:#ffffff; --surface:#ffffff; --fill:#f8f0f0; --ink:#1c1416; --muted:#6b5c5f; --line:#ecdfe0;
+  --accent:var(--red); --accent-soft:#fdecec; --on-accent:#ffffff;
+  --ok:#17784a; --ok-soft:#e3f3ea; --warn:#9a5c00; --warn-soft:#fcf1dc; --crit:#a4161f; --crit-soft:#fde4e5;
   --display:"Bricolage Grotesque","Noto Sans Arabic","Figtree",system-ui,sans-serif;
   --body:"Figtree","Noto Sans Arabic",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r:14px;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    color-scheme:dark;
-    --bg:#0f151c; --surface:#18212b; --ink:#e8edf2; --muted:#98a5b4; --line:#2a3644;
-    --accent:#86b5f0; --accent-soft:#1b2e47; --on-accent:#0d1620;
-    --ok:#62c897; --ok-soft:#143326; --warn:#e7b256; --warn-soft:#3a2c10; --crit:#f28b83; --crit-soft:#40201d;
-  }
-}
-:root[data-theme="dark"]{
-  color-scheme:dark;
-  --bg:#0f151c; --surface:#18212b; --ink:#e8edf2; --muted:#98a5b4; --line:#2a3644;
-  --accent:#86b5f0; --accent-soft:#1b2e47; --on-accent:#0d1620;
-  --ok:#62c897; --ok-soft:#143326; --warn:#e7b256; --warn-soft:#3a2c10; --crit:#f28b83; --crit-soft:#40201d;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -30,7 +19,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .wrap{max-width:600px;margin:0 auto;padding:0 16px}
 .num{font-variant-numeric:tabular-nums}
 
-header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 0 8px}
+header.top{position:sticky;top:0;z-index:5;background:var(--fill);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 0 8px}
 .brandrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .brand{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;line-height:1.1}
 .brand small{display:block;font-family:var(--body);font-weight:500;font-size:12px;color:var(--muted);letter-spacing:.02em}
@@ -89,7 +78,7 @@ h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute
 .eqhead b{font-size:16px}
 .eqhead span{font-size:12.5px;color:var(--muted)}
 .slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.slot{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:8px 4px 9px;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:68px}
+.slot{border:1px solid var(--line);background:var(--fill);border-radius:12px;padding:8px 4px 9px;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:68px}
 .slot .h{font-size:12px;color:var(--muted);font-weight:600}
 .slot .v{font-size:22px;font-weight:700;line-height:1.1}
 .slot .v small{font-size:12px;font-weight:600}
@@ -148,7 +137,7 @@ h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute
 .crow .amt{font-weight:700;font-size:16px;white-space:nowrap}
 .crow .amt.empty{color:var(--accent);font-weight:600;font-size:14px}
 .crow .amt.bad{color:var(--crit)} .crow .amt.good{color:var(--ok)}
-.crow.total{background:var(--bg)}
+.crow.total{background:var(--fill)}
 .panel label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:-8px}
 .mrow{display:flex;align-items:center;gap:10px;padding:11px 14px}
 .mrow .body{flex:1;min-width:0;background:none;border:0;padding:0;text-align:start;font-size:15.5px;overflow-wrap:anywhere}
@@ -160,7 +149,7 @@ a.btn{display:block;text-align:center;text-decoration:none}
 .hrow{display:flex;flex-direction:column;gap:6px;padding:12px 14px;width:100%;text-align:start;background:none;border:0}
 .hrow b{font-size:16px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font-size:12.5px;font-weight:600;border-radius:999px;padding:3px 9px;background:var(--bg);color:var(--muted)}
+.chip{font-size:12.5px;font-weight:600;border-radius:999px;padding:3px 9px;background:var(--fill);color:var(--muted)}
 .chip.ok{background:var(--ok-soft);color:var(--ok)} .chip.crit{background:var(--crit-soft);color:var(--crit)}
 
 /* bottom nav */
@@ -176,13 +165,13 @@ nav.tabs a[aria-current="page"]{color:var(--accent)}
 .panel{background:var(--surface);width:100%;max-width:600px;border-radius:20px 20px 0 0;padding:18px 16px 22px;display:flex;flex-direction:column;gap:14px;max-height:92%;overflow:auto}
 .panel h4{margin:0;font-family:var(--display);font-size:20px}
 .panel p{margin:-8px 0 0;color:var(--muted);font-size:14px}
-.panel input[type=text],.panel textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px;font-size:17px}
+.panel input[type=text],.panel textarea{width:100%;border:1px solid var(--line);background:var(--fill);border-radius:12px;padding:12px;font-size:17px}
 .panel textarea{min-height:92px;resize:vertical}
 .stepper{display:grid;grid-template-columns:64px 1fr 64px;gap:10px;align-items:center}
-.stepper button{height:60px;border-radius:14px;border:1px solid var(--line);background:var(--bg);font-size:28px;font-weight:600}
+.stepper button{height:60px;border-radius:14px;border:1px solid var(--line);background:var(--fill);font-size:28px;font-weight:600}
 .stepper input{text-align:center;font-size:34px !important;font-weight:700;height:60px}
 .quick{display:flex;flex-wrap:wrap;gap:7px}
-.quick button{flex:1 0 46px;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 0;font-weight:700}
+.quick button{flex:1 0 46px;border:1px solid var(--line);background:var(--fill);border-radius:10px;padding:10px 0;font-weight:700}
 .acts{display:flex;gap:10px}
 .acts .btn{flex:1}
 #toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 15px;border-radius:999px;font-size:14px;font-weight:600;z-index:30;max-width:90%}
@@ -190,8 +179,34 @@ nav.tabs a[aria-current="page"]{color:var(--accent)}
 @media (prefers-reduced-motion:no-preference){.bar i{transition:width .25s}}
 .login{padding:16px;display:flex;flex-direction:column;gap:12px}
 .login label{font-size:13px;font-weight:600;color:var(--muted)}
-.login input[type=email],.login input{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px;font-size:17px}
+.login input[type=email],.login input{width:100%;border:1px solid var(--line);background:var(--fill);border-radius:12px;padding:12px;font-size:17px}
 .login .err{margin:0;color:var(--crit);font-size:14px;font-weight:600}
 .login .lbl{font-size:13px;font-weight:600;color:var(--muted)}
 .brsw{margin-top:8px}
 .brsw button{flex:1}
+.attn.openbr{color:var(--accent);font-weight:700;justify-content:center}
+nav.tabs[hidden]{display:none}
+
+/* red header */
+header.top{background:var(--red);color:#fff;border-bottom:0}
+header.top .brand small{color:rgba(255,255,255,.82)}
+header.top .who{background:#fff;color:var(--red);border-color:#fff}
+header.top .who.unset{background:transparent;color:#fff;border-color:rgba(255,255,255,.7)}
+header.top .daterow button{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:#fff}
+header.top .daterow .tod{background:#fff;color:var(--red)}
+header.top .daterow .day span{color:rgba(255,255,255,.8)}
+header.top .seg button{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:#fff}
+header.top .seg button[aria-pressed="true"]{background:#fff;border-color:#fff;color:var(--red)}
+header.top :focus-visible{outline-color:#fff}
+.brandrow .brandwrap{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{height:44px;width:44px;flex:0 0 44px;object-fit:contain;background:#fff;border-radius:50%;padding:2px}
+.card,.tile{box-shadow:0 1px 2px rgba(120,20,25,.05)}
+h3{color:var(--red-dark)}
+
+/* manager: dark header so it never looks like a branch phone */
+body.mgr header.top{background:#231517;border-bottom:4px solid var(--red)}
+body.mgr header.top .who{color:#231517}
+body.mgr header.top .seg button[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff}
+.badge{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;margin-inline-end:4px;vertical-align:1px}
+[dir="rtl"] .badge{letter-spacing:0}
+body.mgr .tabs a[aria-current="page"]{color:#231517}

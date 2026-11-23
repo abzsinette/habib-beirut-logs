@@ -15,7 +15,11 @@ const T={
  connecting:["Connecting to the saved logs…","Connexion aux relevés enregistrés…","جارٍ الاتصال بالسجلات المحفوظة…"],
  unsent:["No connection. Your entries are kept on this phone and will be saved as soon as the connection comes back.","Pas de connexion. Vos saisies sont gardées sur ce téléphone et seront enregistrées dès le retour de la connexion.","لا يوجد اتصال. إدخالاتك محفوظة على هذا الهاتف وستُرسل فور عودة الاتصال."],
  whoLogin:["Sign in as","Se connecter en tant que","تسجيل الدخول باسم"],
- mgrView:["Manager view, all branches","Vue manager, toutes les branches","عرض المدير، كل الفروع"],
+ mgrView:["Manager","Manager","المدير"],
+ both:["Both","Les deux","الفرعان"],
+ bothTitle:["Manager overview","Vue d'ensemble manager","نظرة المدير العامة"],
+ bothSub:["Both branches today. Tap a line to open it in that branch.","Les deux branches aujourd'hui. Touchez une ligne pour l'ouvrir dans sa branche.","الفرعان اليوم. اضغط على أي سطر لفتحه في فرعه."],
+ openBranch:["Open {0} →","Ouvrir {0} →","فتح {0} ←"],
  noBranch:["This login is not linked to a branch. Ask the manager to check the setup.","Ce compte n'est relié à aucune branche. Demandez au responsable de vérifier la configuration.","هذا الحساب غير مرتبط بأي فرع. اطلب من المدير التحقق من الإعداد."],
  loginTitle:["Sign in","Connexion","تسجيل الدخول"],
  loginHint:["Enter your branch's email and password. You only need to do this once on each phone.","Saisissez l'e-mail et le mot de passe de votre branche. Une seule fois par téléphone.","أدخل البريد الإلكتروني وكلمة السر الخاصة بفرعك. تحتاج إلى ذلك مرة واحدة فقط على كل هاتف."],
@@ -293,13 +297,13 @@ const CFG=window.HB_CONFIG||{};
 let today=serviceDay(), viewDate=today, day={}, view="today";
 let sub={temperatures:"bar",bar:"open",cleaning:"cuisine"};
 let name="", mode="loading", cantSave=false, slow=false, online=true, loginBusy=false, loginErr="";
-let branch="", myBranch="", isMgr=false, acct="malakoff";
+let branch="", myBranch="", isMgr=false, acct="malakoff", allDays=null;
 let sb=null, chan=null, slowTimer=null, retryTimer=null, flushing=false, queue={};
 let hist=null, sheetSave=null, afterName=null, mem={};
 try{name=localStorage.getItem("hb:name")||"";}catch(e){}
 try{queue=JSON.parse(localStorage.getItem("hb:queue2")||"{}")||{};}catch(e){queue={};}
 try{acct=localStorage.getItem("hb:email")||"";}catch(e){}
-const readOnly=()=>viewDate!==today||cantSave||mode!=="cloud";
+const readOnly=()=>viewDate!==today||cantSave||mode!=="cloud"||branch==="all";
 function applyLang(){document.documentElement.lang=LANGS[LI];document.documentElement.dir=LI===2?"rtl":"ltr";}
 
 /* ---------- storage: Supabase database, with a copy on this device for offline use ----------
@@ -318,9 +322,23 @@ async function fetchDay(date){
   if(r.error)throw r.error;
   return r.data&&r.data.data?r.data.data:{};
 }
+async function fetchAll(date){
+  const r=await sb.from("days").select("branch,data").eq("day",date);
+  if(r.error)throw r.error;
+  const o={};BRANCH.forEach(b=>{o[b[0]]={};});(r.data||[]).forEach(x=>{o[x.branch]=x.data||{};});return o;
+}
 async function loadDay(){
   if(chan&&sb){sb.removeChannel(chan);chan=null;}
   clearTimeout(slowTimer);slow=false;
+  if(branch==="all"){ /* manager overview: both branches at once */
+    const date=viewDate;allDays=null;render();
+    if(mode!=="cloud")return;
+    chan=sb.channel("all-"+date).on("postgres_changes",{event:"*",schema:"public",table:"days",filter:"day=eq."+date},pl=>{
+      if(date!==viewDate||branch!=="all"||!pl.new||!allDays)return;allDays[pl.new.branch]=pl.new.data||{};render();
+    }).subscribe();
+    try{const o=await fetchAll(date);if(date===viewDate&&branch==="all"){allDays=o;online=true;}}catch(e){slow=true;}
+    render();return;
+  }
   const date=viewDate,br=branch;
   day=merge(localGet(date),clone(queue[K(date)]||{}));render();
   if(mode!=="cloud")return;
@@ -336,6 +354,7 @@ async function loadDay(){
 }
 async function refresh(){ /* safety net if live updates are missed */
   if(mode!=="cloud"||flushing||!$("sheet").hidden)return;
+  if(branch==="all"){const date=viewDate;try{const o=await fetchAll(date);if(date===viewDate&&branch==="all"){allDays=o;slow=false;render();}}catch(e){}return;}
   const date=viewDate,br=branch;
   try{const data=await fetchDay(date);if(date===viewDate&&br===branch&&!flushing){day=useServer(date,data);slow=false;online=true;render();}}catch(e){}
 }
@@ -386,12 +405,31 @@ async function startCloud(){
   if(!m||(!m.is_manager&&!BRANCH.some(b=>b[0]===m.branch))){try{await sb.auth.signOut();}catch(e){}mode="login";loginErr=t("noBranch");render();return;}
   isMgr=!!m.is_manager;myBranch=m.branch||"";
   let pick="";try{pick=localStorage.getItem("hb:branch")||"";}catch(e){}
-  branch=isMgr?(BRANCH.some(b=>b[0]===pick)?pick:"malakoff"):myBranch;
+  branch=isMgr?((pick==="all"||BRANCH.some(b=>b[0]===pick))?pick:"all"):myBranch;
   for(const k of Object.keys(queue))if(!isMgr&&!k.startsWith(myBranch+"|"))delete queue[k];saveQueue();
   mode="cloud";loadDay();flush();if(view==="history")loadHistory();if(!name)nameSheet();
 }
 function setBranch(b){if(!isMgr||b===branch)return;branch=b;try{localStorage.setItem("hb:branch",b);}catch(e){}hist=null;loadDay();if(view==="history")loadHistory();}
 async function signOut(){closeSheet();try{await sb.auth.signOut();}catch(e){}mode="login";isMgr=false;branch="";if(chan){sb.removeChannel(chan);chan=null;}render();}
+function vOverview(){
+  let h='<h2>'+esc(t("bothTitle"))+'</h2><p class="sub">'+esc(t("bothSub"))+'</p>';
+  if(!allDays)return h+'<div class="banner">'+esc(t("connecting"))+'</div>';
+  for(const [br,full] of BRANCH){
+    const d=allDays[br]||{},a=attention(d,viewDate),cs=cashStats(d);
+    let tf=0,tt=0;for(const ar in TEMP){const x=tempStats(d,ar);tf+=x.filled;tt+=x.total;}
+    let cd=0,ct=0;for(const k in CHECK){cd+=checkDone(d,k);ct+=CHECK[k].items.length;}
+    let cl=0;for(const ar in CLEAN)cl+=cleanDone(d,ar);
+    const chip=(lab,n,tot)=>'<span class="chip'+(n>=tot?" ok":"")+'">'+esc(lab)+' '+ltr(n+"/"+tot)+'</span>';
+    h+='<h3>'+esc(full)+'</h3><div class="card list"><div class="hrow"><span class="chips num">'+
+      chip(t("hTemp"),tf,tt)+chip(t("hCheck"),cd,ct)+chip(t("hClean"),cl,HOURS.length*2)+
+      '<span class="chip">'+esc(t("totalPay"))+' '+ltr(esc(moneyT(cs.total)))+'</span>'+
+      '<span class="chip">'+esc(t("tMeals"))+' '+mealList(d).length+'</span></span></div>'+
+      (a.length?a.map(x=>'<button class="attn" data-act="gobr" data-br="'+br+'" data-view="'+x.go[0]+'" data-sub="'+x.go[1]+'"><span class="dot '+x.c+'"></span><span>'+esc(x.t)+'<small>'+esc(x.s)+'</small></span></button>').join("")
+        :'<div class="attn"><span class="dot ok"></span><span>'+esc(t("allGood"))+'</span></div>')+
+      '<button class="attn openbr" data-act="gobr" data-br="'+br+'" data-view="today" data-sub=""><span>'+esc(t("openBranch",full.replace("Habib Beirut ","")))+'</span></button></div>';
+  }
+  return h;
+}
 function vLogin(){
   return '<h2>'+esc(t("loginTitle"))+'</h2><p class="sub">'+esc(t("loginHint"))+'</p><div class="card login">'+
    '<label for="f-email">'+esc(t("email"))+'</label><input type="email" id="f-email" dir="ltr" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" value="'+esc(acct)+'" placeholder="malakoff@habibbeirut.app">'+
@@ -419,6 +457,7 @@ const isOpen=(date,h,leadMin)=>date!==today||Date.now()>=at(date,h)-leadMin*60e3
 
 /* ---------- rendering ---------- */
 function render(){
+  document.body.classList.toggle("mgr",isMgr&&mode==="cloud");
   const seg=document.querySelector(".seg"),sl=seg?seg.scrollLeft:0;
   renderHead();
   const b=[];
@@ -427,23 +466,23 @@ function render(){
   if(slow)b.push('<div class="banner warn">'+esc(t("slow"))+'</div>');
   if(cantSave)b.push('<div class="banner crit">'+esc(t("cantSave"))+'</div>');
   if(viewDate!==today&&view!=="history")b.push('<div class="banner">'+esc(t("viewingPast",nice(viewDate)))+'</div>');
-  const body=mode==="login"?vLogin():mode==="setup"?vSetup():view==="temperatures"?vTemp():view==="bar"?vBar():view==="cleaning"?vClean():view==="cash"?vCash():view==="meals"?vMeals():view==="history"?vHistory():vToday();
+  const body=mode==="login"?vLogin():mode==="setup"?vSetup():(mode==="cloud"&&branch==="all")?vOverview():view==="temperatures"?vTemp():view==="bar"?vBar():view==="cleaning"?vClean():view==="cash"?vCash():view==="meals"?vMeals():view==="history"?vHistory():vToday();
   $("main").innerHTML=b.join("")+body+'<p class="foot copy" dir="ltr">App © 2026 Sinette · Habib Beirut</p>';
   const seg2=document.querySelector(".seg");if(seg2)seg2.scrollLeft=sl;
   renderTabs();
 }
 function renderHead(){
   const rtl=LI===2;
-  const brName=(BRANCH.find(b=>b[0]===branch)||[])[1];
+  const brShort=((BRANCH.find(b=>b[0]===branch)||[])[1]||"").replace("Habib Beirut ","");
   $("head").innerHTML=
-  '<div class="brandrow"><div class="brand">'+esc(brName||"Habib Beirut")+'<small>'+esc(isMgr?t("mgrView"):t("tagline"))+'</small></div><div class="hbtns">'+
+  '<div class="brandrow"><div class="brandwrap"><img class="logo" src="logo.png" alt="" onerror="this.remove()"><div class="brand">Habib Beirut<small>'+(mode!=="cloud"?esc(t("tagline")):isMgr?'<span class="badge">'+esc(t("mgrView"))+'</span> '+esc(brShort||t("both")):esc(brShort||t("tagline")))+'</small></div></div><div class="hbtns">'+
   '<button class="who lang" data-act="lang" aria-label="'+esc(t("language"))+'">'+LANGTAG[LI]+'</button>'+
   '<button class="who'+(name?'':' unset')+'" data-act="name">'+(name?esc(name):esc(t("setName")))+'</button></div></div>'+
   '<div class="daterow"><button data-act="prev" aria-label="'+esc(t("prevDay"))+'">'+(rtl?"›":"‹")+'</button>'+
   '<div class="day">'+esc(nice(viewDate))+'<span>'+esc(viewDate===today?t("today"):t("pastRO"))+'</span></div>'+
   (viewDate===today?'':'<button class="tod" data-act="tod">'+esc(t("today"))+'</button>')+
   '<button data-act="next" aria-label="'+esc(t("nextDay"))+'"'+(viewDate>=today?" disabled":"")+'>'+(rtl?"‹":"›")+'</button></div>'+
-  (isMgr&&mode==="cloud"?'<div class="seg brsw" role="group">'+BRANCH.map(b=>'<button data-act="setbranch" data-v="'+b[0]+'" aria-pressed="'+(branch===b[0])+'">'+esc(b[1].replace("Habib Beirut ",""))+'</button>').join("")+'</div>':"");
+  (isMgr&&mode==="cloud"?'<div class="seg brsw" role="group">'+[["all",t("both")]].concat(BRANCH.map(b=>[b[0],b[1].replace("Habib Beirut ","")])).map(b=>'<button data-act="setbranch" data-v="'+b[0]+'" aria-pressed="'+(branch===b[0])+'">'+esc(b[1])+'</button>').join("")+'</div>':"");
 }
 const ICON={today:'<path d="M4 6h16M4 12h10M4 18h13"/><circle cx="19" cy="12" r="1.6"/>',
  temperatures:'<path d="M10 4a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"/><path d="M12 9v7"/>',
@@ -453,7 +492,7 @@ const ICON={today:'<path d="M4 6h16M4 12h10M4 18h13"/><circle cx="19" cy="12" r=
  cash:'<rect x="3" y="6.5" width="18" height="11" rx="2"/><circle cx="12" cy="12" r="2.4"/><path d="M6.5 9.5v5M17.5 9.5v5"/>',
  history:'<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'};
 const TABKEY={today:"tabToday",temperatures:"tabTemp",bar:"tabBar",cleaning:"tabClean",cash:"tabCash",meals:"tabMeals",history:"tabHist"};
-function renderTabs(){$("tabs").innerHTML=VIEWS.filter(v=>v!=="history").map(v=>'<a href="#'+v+'"'+(v===view?' aria-current="page"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+ICON[v]+'</svg>'+esc(t(TABKEY[v]))+'</a>').join("");}
+function renderTabs(){const nav=document.querySelector("nav.tabs");if(nav)nav.hidden=(mode==="cloud"&&branch==="all");$("tabs").innerHTML=VIEWS.filter(v=>v!=="history").map(v=>'<a href="#'+v+'"'+(v===view?' aria-current="page"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+ICON[v]+'</svg>'+esc(t(TABKEY[v]))+'</a>').join("");}
 const segHtml=(key,opts)=>'<div class="seg" role="group">'+opts.map(o=>'<button data-act="sub" data-k="'+key+'" data-v="'+o[0]+'" aria-pressed="'+(sub[key]===o[0])+'">'+esc(o[1])+'<span class="n num">'+ltr(o[2])+'</span></button>').join("")+'</div>';
 
 function attention(d,date){
@@ -749,6 +788,7 @@ document.addEventListener("click",ev=>{
   else if(a==="name")nameSheet();
   else if(a==="signin")signIn();
   else if(a==="setbranch")setBranch(d.v);
+  else if(a==="gobr"){setBranch(d.br);go(d.view,d.sub);}
   else if(a==="signout")signOut();
   else if(a==="lang")langSheet();
   else if(a==="setlang"){LI=Number(d.i);try{localStorage.setItem("hb:lang",LANGS[LI]);}catch(e){}applyLang();closeSheet();render();}
