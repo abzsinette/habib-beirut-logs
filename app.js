@@ -18,7 +18,9 @@ const T={
  mgrView:["Manager view, all branches","Vue manager, toutes les branches","عرض المدير، كل الفروع"],
  noBranch:["This login is not linked to a branch. Ask the manager to check the setup.","Ce compte n'est relié à aucune branche. Demandez au responsable de vérifier la configuration.","هذا الحساب غير مرتبط بأي فرع. اطلب من المدير التحقق من الإعداد."],
  loginTitle:["Sign in","Connexion","تسجيل الدخول"],
- loginHint:["Choose your branch and enter its password. You only need to do this once on each phone.","Choisissez votre branche et saisissez son mot de passe. Une seule fois par téléphone.","اختر فرعك وأدخل كلمة السر الخاصة به. تحتاج إلى ذلك مرة واحدة فقط على كل هاتف."],
+ loginHint:["Enter your branch's email and password. You only need to do this once on each phone.","Saisissez l'e-mail et le mot de passe de votre branche. Une seule fois par téléphone.","أدخل البريد الإلكتروني وكلمة السر الخاصة بفرعك. تحتاج إلى ذلك مرة واحدة فقط على كل هاتف."],
+ email:["Email","E-mail","البريد الإلكتروني"],
+ needBoth:["Enter both the email and the password.","Saisissez l'e-mail et le mot de passe.","أدخل البريد الإلكتروني وكلمة السر."],
  password:["Password","Mot de passe","كلمة السر"],
  signIn:["Sign in","Se connecter","دخول"],signingIn:["Signing in…","Connexion…","جارٍ الدخول…"],
  wrongPass:["Wrong password. Check it with your manager.","Mot de passe incorrect. Vérifiez-le auprès de votre responsable.","كلمة السر خاطئة. تحقّق منها مع المدير."],
@@ -296,7 +298,7 @@ let sb=null, chan=null, slowTimer=null, retryTimer=null, flushing=false, queue={
 let hist=null, sheetSave=null, afterName=null, mem={};
 try{name=localStorage.getItem("hb:name")||"";}catch(e){}
 try{queue=JSON.parse(localStorage.getItem("hb:queue2")||"{}")||{};}catch(e){queue={};}
-try{acct=localStorage.getItem("hb:acct")||"malakoff";}catch(e){}
+try{acct=localStorage.getItem("hb:email")||"";}catch(e){}
 const readOnly=()=>viewDate!==today||cantSave||mode!=="cloud";
 function applyLang(){document.documentElement.lang=LANGS[LI];document.documentElement.dir=LI===2?"rtl":"ltr";}
 
@@ -366,21 +368,21 @@ const stamp=()=>({by:name,at:new Date().toISOString()});
 
 /* ---------- sign in (one shared restaurant account) ---------- */
 async function signIn(){
-  const pw=($("f-pass")||{}).value||"";
-  if(!pw){loginErr=t("wrongPass");render();return;}
+  const pw=($("f-pass")||{}).value||"",em=(($("f-email")||{}).value||"").trim().toLowerCase();
+  acct=em;
+  if(!em||!pw){loginErr=t("needBoth");render();if($("f-pass"))$("f-pass").value=pw;return;}
   loginBusy=true;loginErr="";render();
-  const r=await sb.auth.signInWithPassword({email:acct+"@"+DOMAIN,password:pw});
+  const r=await sb.auth.signInWithPassword({email:em,password:pw});
   loginBusy=false;
-  if(r.error){loginErr=r.error.status===400?t("wrongPass"):t("noNet");render();return;}
-  try{localStorage.setItem("hb:acct",acct);}catch(e){}
+  if(r.error){loginErr=(r.error.status===400?t("wrongPass"):t("noNet"))+" ("+(r.error.message||r.error.status)+")";render();return;}
+  try{localStorage.setItem("hb:email",em);}catch(e){}
   startCloud();
 }
-const DOMAIN=String(CFG.staffEmail||"staff@habibbeirut.app").split("@")[1];
 async function startCloud(){
   mode="loading";render();
   let m=null;
   try{const u=(await sb.auth.getUser()).data.user;const r=await sb.from("members").select("branch,is_manager").eq("user_id",u.id).maybeSingle();if(r.error)throw r.error;m=r.data;}
-  catch(e){mode="login";loginErr=t("noNet");render();return;}
+  catch(e){mode="login";loginErr=t("noNet")+" ("+((e&&(e.message||e.code))||"?")+")";try{await sb.auth.signOut();}catch(x){}render();return;}
   if(!m||(!m.is_manager&&!BRANCH.some(b=>b[0]===m.branch))){try{await sb.auth.signOut();}catch(e){}mode="login";loginErr=t("noBranch");render();return;}
   isMgr=!!m.is_manager;myBranch=m.branch||"";
   let pick="";try{pick=localStorage.getItem("hb:branch")||"";}catch(e){}
@@ -392,7 +394,7 @@ function setBranch(b){if(!isMgr||b===branch)return;branch=b;try{localStorage.set
 async function signOut(){closeSheet();try{await sb.auth.signOut();}catch(e){}mode="login";isMgr=false;branch="";if(chan){sb.removeChannel(chan);chan=null;}render();}
 function vLogin(){
   return '<h2>'+esc(t("loginTitle"))+'</h2><p class="sub">'+esc(t("loginHint"))+'</p><div class="card login">'+
-   '<span class="lbl">'+esc(t("whoLogin"))+'</span><div class="seg" role="group">'+[["malakoff","Malakoff"],["bistro","Bistro"],["manager",t("manager")]].map(o=>'<button data-act="acct" data-v="'+o[0]+'" aria-pressed="'+(acct===o[0])+'">'+esc(o[1])+'</button>').join("")+'</div>'+
+   '<label for="f-email">'+esc(t("email"))+'</label><input type="email" id="f-email" dir="ltr" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" value="'+esc(acct)+'" placeholder="malakoff@habibbeirut.app">'+
    '<label for="f-pass">'+esc(t("password"))+'</label><input type="password" id="f-pass" autocomplete="current-password">'+
    (loginErr?'<p class="err">'+esc(loginErr)+'</p>':"")+
    '<button class="btn" data-act="signin"'+(loginBusy?" disabled":"")+'>'+esc(loginBusy?t("signingIn"):t("signIn"))+'</button></div>';
@@ -746,7 +748,6 @@ document.addEventListener("click",ev=>{
   else if(a==="tod")setDate(today);
   else if(a==="name")nameSheet();
   else if(a==="signin")signIn();
-  else if(a==="acct"){const pw=($("f-pass")||{}).value||"";acct=d.v;loginErr="";render();if($("f-pass")){$("f-pass").value=pw;$("f-pass").focus();}}
   else if(a==="setbranch")setBranch(d.v);
   else if(a==="signout")signOut();
   else if(a==="lang")langSheet();
@@ -777,7 +778,7 @@ document.addEventListener("click",ev=>{
   else if(a==="cleannote")withName(()=>{const ar=sub.cleaning,h=d.h;noteSheet(L(CLEAN[ar])+" · "+h+":00",t("cleanHint"),g(day,"clean",ar,"h"+h,"note"),v=>patch({clean:{[ar]:{["h"+h]:{note:v||null}}}}));});
   else if(a==="sign")withName(()=>{const on=!!g(day,"sign",d.key,"at");patch({sign:{[d.key]:on?{by:null,at:null}:stamp()}});});
 });
-document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target&&e.target.id==="f-pass"){signIn();return;}if(e.key==="Escape"&&!$("sheet").hidden){afterName=null;closeSheet();}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target&&(e.target.id==="f-pass"||e.target.id==="f-email")){if(e.target.id==="f-email"&&$("f-pass")&&!$("f-pass").value){$("f-pass").focus();return;}signIn();return;}if(e.key==="Escape"&&!$("sheet").hidden){afterName=null;closeSheet();}});
 function route(){const h=location.hash.slice(1);view=VIEWS.includes(h)?h:"today";if(view==="history")loadHistory();else render();}
 window.addEventListener("hashchange",route);
 
