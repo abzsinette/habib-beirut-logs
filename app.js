@@ -14,9 +14,12 @@ const T={
  tabToday:["Today","Jour","اليوم"],tabTemp:["Temp.","Temp.","الحرارة"],tabBar:["Lists","Listes","القوائم"],tabClean:["Cleaning","Nettoyage","التنظيف"],tabHist:["History","Historique","السجل"],
  connecting:["Connecting to the saved logs…","Connexion aux relevés enregistrés…","جارٍ الاتصال بالسجلات المحفوظة…"],
  unsent:["No connection. Your entries are kept on this phone and will be saved as soon as the connection comes back.","Pas de connexion. Vos saisies sont gardées sur ce téléphone et seront enregistrées dès le retour de la connexion.","لا يوجد اتصال. إدخالاتك محفوظة على هذا الهاتف وستُرسل فور عودة الاتصال."],
+ whoLogin:["Sign in as","Se connecter en tant que","تسجيل الدخول باسم"],
+ mgrView:["Manager view, all branches","Vue manager, toutes les branches","عرض المدير، كل الفروع"],
+ noBranch:["This login is not linked to a branch. Ask the manager to check the setup.","Ce compte n'est relié à aucune branche. Demandez au responsable de vérifier la configuration.","هذا الحساب غير مرتبط بأي فرع. اطلب من المدير التحقق من الإعداد."],
  loginTitle:["Sign in","Connexion","تسجيل الدخول"],
- loginHint:["Enter the restaurant password. You only need to do this once on each phone.","Saisissez le mot de passe du restaurant. Une seule fois par téléphone.","أدخل كلمة سر المطعم. تحتاج إلى ذلك مرة واحدة فقط على كل هاتف."],
- password:["Restaurant password","Mot de passe du restaurant","كلمة سر المطعم"],
+ loginHint:["Choose your branch and enter its password. You only need to do this once on each phone.","Choisissez votre branche et saisissez son mot de passe. Une seule fois par téléphone.","اختر فرعك وأدخل كلمة السر الخاصة به. تحتاج إلى ذلك مرة واحدة فقط على كل هاتف."],
+ password:["Password","Mot de passe","كلمة السر"],
  signIn:["Sign in","Se connecter","دخول"],signingIn:["Signing in…","Connexion…","جارٍ الدخول…"],
  wrongPass:["Wrong password. Check it with your manager.","Mot de passe incorrect. Vérifiez-le auprès de votre responsable.","كلمة السر خاطئة. تحقّق منها مع المدير."],
  noNet:["Cannot reach the server. Check the wifi and try again.","Serveur injoignable. Vérifiez le wifi et réessayez.","تعذّر الوصول إلى الخادم. تحقّق من الواي فاي وحاول مجدداً."],
@@ -147,6 +150,7 @@ const t=(k,...a)=>{const row=T[k];let s=row?row[LI]:k;a.forEach((v,i)=>{s=s.spli
 const L=tr=>Array.isArray(tr)?tr[LI]:tr;
 
 /* ---------- The sheets, copied from the paper forms ---------- */
+const BRANCH=[["malakoff","Habib Beirut Malakoff"],["bistro","Habib Beirut Bistro"]];
 const SLOTS=[10,14,18,21];
 const HOURS=[10,11,12,13,14,15,16,17,18,19,20,21,22];
 const LIMIT={pos:{min:0,max:4,text:"limPos",quick:[0,1,2,3,4,5,6,7,8]},neg:{min:-40,max:-18,text:"limNeg",quick:[-24,-22,-21,-20,-19,-18,-17,-16,-14]}};
@@ -287,71 +291,74 @@ const CFG=window.HB_CONFIG||{};
 let today=serviceDay(), viewDate=today, day={}, view="today";
 let sub={temperatures:"bar",bar:"open",cleaning:"cuisine"};
 let name="", mode="loading", cantSave=false, slow=false, online=true, loginBusy=false, loginErr="";
+let branch="", myBranch="", isMgr=false, acct="malakoff";
 let sb=null, chan=null, slowTimer=null, retryTimer=null, flushing=false, queue={};
 let hist=null, sheetSave=null, afterName=null, mem={};
 try{name=localStorage.getItem("hb:name")||"";}catch(e){}
-try{queue=JSON.parse(localStorage.getItem("hb:queue")||"{}")||{};}catch(e){queue={};}
+try{queue=JSON.parse(localStorage.getItem("hb:queue2")||"{}")||{};}catch(e){queue={};}
+try{acct=localStorage.getItem("hb:acct")||"malakoff";}catch(e){}
 const readOnly=()=>viewDate!==today||cantSave||mode!=="cloud";
 function applyLang(){document.documentElement.lang=LANGS[LI];document.documentElement.dir=LI===2?"rtl":"ltr";}
 
 /* ---------- storage: Supabase database, with a copy on this device for offline use ----------
    Every change is put in a queue first (kept on the phone), then sent to the database.
    If the wifi drops, the queue is sent again automatically when it comes back. */
-function localGet(date){try{return JSON.parse(localStorage.getItem("hb:day:"+date)||"null")||{};}catch(e){return clone(mem[date]);}}
-function localPut(date,d){mem[date]=clone(d);try{localStorage.setItem("hb:day:"+date,JSON.stringify(d));}catch(e){}}
-const saveQueue=()=>{try{localStorage.setItem("hb:queue",JSON.stringify(queue));}catch(e){}};
+const K=(date,br)=>(br||branch)+"|"+date;
+function localGet(date){const k=K(date);try{return JSON.parse(localStorage.getItem("hb:day:"+k)||"null")||{};}catch(e){return clone(mem[k]);}}
+function localPut(date,d,br){const k=K(date,br);mem[k]=clone(d);try{localStorage.setItem("hb:day:"+k,JSON.stringify(d));}catch(e){}}
+const saveQueue=()=>{try{localStorage.setItem("hb:queue2",JSON.stringify(queue));}catch(e){}};
 const queued=()=>Object.keys(queue).length;
 function useServer(date,data){ /* server copy + anything not yet sent from this phone */
-  const d=merge(clone(data||{}),clone(queue[date]||{}));localPut(date,data||{});return d;
+  const d=merge(clone(data||{}),clone(queue[K(date)]||{}));localPut(date,data||{});return d;
 }
 async function fetchDay(date){
-  const r=await sb.from("days").select("data").eq("day",date).maybeSingle();
+  const r=await sb.from("days").select("data").eq("branch",branch).eq("day",date).maybeSingle();
   if(r.error)throw r.error;
   return r.data&&r.data.data?r.data.data:{};
 }
 async function loadDay(){
   if(chan&&sb){sb.removeChannel(chan);chan=null;}
   clearTimeout(slowTimer);slow=false;
-  const date=viewDate;
-  day=merge(localGet(date),clone(queue[date]||{}));render();
+  const date=viewDate,br=branch;
+  day=merge(localGet(date),clone(queue[K(date)]||{}));render();
   if(mode!=="cloud")return;
   slowTimer=setTimeout(()=>{slow=true;render();},10000);
   /* live updates: when someone else saves this day, show it here too */
-  chan=sb.channel("day-"+date).on("postgres_changes",{event:"*",schema:"public",table:"days",filter:"day=eq."+date},pl=>{
-    if(date!==viewDate||flushing||!pl.new||!pl.new.data)return;
+  chan=sb.channel("day-"+br+"-"+date).on("postgres_changes",{event:"*",schema:"public",table:"days",filter:"day=eq."+date},pl=>{
+    if(date!==viewDate||br!==branch||flushing||!pl.new||!pl.new.data||pl.new.branch!==br)return;
     day=useServer(date,pl.new.data);render();
   }).subscribe();
-  try{const data=await fetchDay(date);if(date!==viewDate)return;clearTimeout(slowTimer);slow=false;online=true;if(!flushing)day=useServer(date,data);}
-  catch(e){if(date!==viewDate)return;clearTimeout(slowTimer);slow=true;}
+  try{const data=await fetchDay(date);if(date!==viewDate||br!==branch)return;clearTimeout(slowTimer);slow=false;online=true;if(!flushing)day=useServer(date,data);}
+  catch(e){if(date!==viewDate||br!==branch)return;clearTimeout(slowTimer);slow=true;}
   render();
 }
 async function refresh(){ /* safety net if live updates are missed */
   if(mode!=="cloud"||flushing||!$("sheet").hidden)return;
-  const date=viewDate;
-  try{const data=await fetchDay(date);if(date===viewDate&&!flushing){day=useServer(date,data);slow=false;online=true;render();}}catch(e){}
+  const date=viewDate,br=branch;
+  try{const data=await fetchDay(date);if(date===viewDate&&br===branch&&!flushing){day=useServer(date,data);slow=false;online=true;render();}}catch(e){}
 }
 function patch(p){
   if(readOnly())return;
   merge(day,p);
-  queue[viewDate]=merge(clone(queue[viewDate]||{}),clone(p));saveQueue();
+  const k=K(viewDate);queue[k]=merge(clone(queue[k]||{}),clone(p));saveQueue();
   render();flush();
 }
 async function flush(){
   if(flushing||mode!=="cloud"||!queued())return;
   flushing=true;clearTimeout(retryTimer);
   try{
-    for(const date of Object.keys(queue)){
-      const p=queue[date];
-      const r=await sb.rpc("merge_day",{p_day:date,p_patch:p});
+    for(const k of Object.keys(queue)){
+      const p=queue[k],[br,date]=k.split("|");
+      const r=await sb.rpc("merge_day",{p_branch:br,p_day:date,p_patch:p});
       if(r.error)throw r.error;
-      if(queue[date]===p)delete queue[date];
-      saveQueue();localPut(date,r.data||{});
-      if(date===viewDate)day=merge(clone(r.data||{}),clone(queue[date]||{}));
+      if(queue[k]===p)delete queue[k];
+      saveQueue();localPut(date,r.data||{},br);
+      if(date===viewDate&&br===branch)day=merge(clone(r.data||{}),clone(queue[k]||{}));
     }
     online=true;
   }catch(e){
     online=false;
-    if(e&&e.code==="42501"){cantSave=true;toast(t("cantSave"));}
+    if(e&&e.code==="42501"){cantSave=true;toast(t("cantSave"));queue={};saveQueue();}
     retryTimer=setTimeout(flush,15000);
   }finally{flushing=false;render();if(online&&queued())flush();}
 }
@@ -362,15 +369,30 @@ async function signIn(){
   const pw=($("f-pass")||{}).value||"";
   if(!pw){loginErr=t("wrongPass");render();return;}
   loginBusy=true;loginErr="";render();
-  const r=await sb.auth.signInWithPassword({email:CFG.staffEmail,password:pw});
+  const r=await sb.auth.signInWithPassword({email:acct+"@"+DOMAIN,password:pw});
   loginBusy=false;
   if(r.error){loginErr=r.error.status===400?t("wrongPass"):t("noNet");render();return;}
+  try{localStorage.setItem("hb:acct",acct);}catch(e){}
   startCloud();
 }
-function startCloud(){mode="cloud";loadDay();flush();if(view==="history")loadHistory();if(!name)nameSheet();}
-async function signOut(){closeSheet();try{await sb.auth.signOut();}catch(e){}mode="login";if(chan){sb.removeChannel(chan);chan=null;}render();}
+const DOMAIN=String(CFG.staffEmail||"staff@habibbeirut.app").split("@")[1];
+async function startCloud(){
+  mode="loading";render();
+  let m=null;
+  try{const u=(await sb.auth.getUser()).data.user;const r=await sb.from("members").select("branch,is_manager").eq("user_id",u.id).maybeSingle();if(r.error)throw r.error;m=r.data;}
+  catch(e){mode="login";loginErr=t("noNet");render();return;}
+  if(!m||(!m.is_manager&&!BRANCH.some(b=>b[0]===m.branch))){try{await sb.auth.signOut();}catch(e){}mode="login";loginErr=t("noBranch");render();return;}
+  isMgr=!!m.is_manager;myBranch=m.branch||"";
+  let pick="";try{pick=localStorage.getItem("hb:branch")||"";}catch(e){}
+  branch=isMgr?(BRANCH.some(b=>b[0]===pick)?pick:"malakoff"):myBranch;
+  for(const k of Object.keys(queue))if(!isMgr&&!k.startsWith(myBranch+"|"))delete queue[k];saveQueue();
+  mode="cloud";loadDay();flush();if(view==="history")loadHistory();if(!name)nameSheet();
+}
+function setBranch(b){if(!isMgr||b===branch)return;branch=b;try{localStorage.setItem("hb:branch",b);}catch(e){}hist=null;loadDay();if(view==="history")loadHistory();}
+async function signOut(){closeSheet();try{await sb.auth.signOut();}catch(e){}mode="login";isMgr=false;branch="";if(chan){sb.removeChannel(chan);chan=null;}render();}
 function vLogin(){
   return '<h2>'+esc(t("loginTitle"))+'</h2><p class="sub">'+esc(t("loginHint"))+'</p><div class="card login">'+
+   '<span class="lbl">'+esc(t("whoLogin"))+'</span><div class="seg" role="group">'+[["malakoff","Malakoff"],["bistro","Bistro"],["manager",t("manager")]].map(o=>'<button data-act="acct" data-v="'+o[0]+'" aria-pressed="'+(acct===o[0])+'">'+esc(o[1])+'</button>').join("")+'</div>'+
    '<label for="f-pass">'+esc(t("password"))+'</label><input type="password" id="f-pass" autocomplete="current-password">'+
    (loginErr?'<p class="err">'+esc(loginErr)+'</p>':"")+
    '<button class="btn" data-act="signin"'+(loginBusy?" disabled":"")+'>'+esc(loginBusy?t("signingIn"):t("signIn"))+'</button></div>';
@@ -410,14 +432,16 @@ function render(){
 }
 function renderHead(){
   const rtl=LI===2;
+  const brName=(BRANCH.find(b=>b[0]===branch)||[])[1];
   $("head").innerHTML=
-  '<div class="brandrow"><div class="brand">Habib Beirut<small>'+esc(t("tagline"))+'</small></div><div class="hbtns">'+
+  '<div class="brandrow"><div class="brand">'+esc(brName||"Habib Beirut")+'<small>'+esc(isMgr?t("mgrView"):t("tagline"))+'</small></div><div class="hbtns">'+
   '<button class="who lang" data-act="lang" aria-label="'+esc(t("language"))+'">'+LANGTAG[LI]+'</button>'+
   '<button class="who'+(name?'':' unset')+'" data-act="name">'+(name?esc(name):esc(t("setName")))+'</button></div></div>'+
   '<div class="daterow"><button data-act="prev" aria-label="'+esc(t("prevDay"))+'">'+(rtl?"›":"‹")+'</button>'+
   '<div class="day">'+esc(nice(viewDate))+'<span>'+esc(viewDate===today?t("today"):t("pastRO"))+'</span></div>'+
   (viewDate===today?'':'<button class="tod" data-act="tod">'+esc(t("today"))+'</button>')+
-  '<button data-act="next" aria-label="'+esc(t("nextDay"))+'"'+(viewDate>=today?" disabled":"")+'>'+(rtl?"‹":"›")+'</button></div>';
+  '<button data-act="next" aria-label="'+esc(t("nextDay"))+'"'+(viewDate>=today?" disabled":"")+'>'+(rtl?"‹":"›")+'</button></div>'+
+  (isMgr&&mode==="cloud"?'<div class="seg brsw" role="group">'+BRANCH.map(b=>'<button data-act="setbranch" data-v="'+b[0]+'" aria-pressed="'+(branch===b[0])+'">'+esc(b[1].replace("Habib Beirut ",""))+'</button>').join("")+'</div>':"");
 }
 const ICON={today:'<path d="M4 6h16M4 12h10M4 18h13"/><circle cx="19" cy="12" r="1.6"/>',
  temperatures:'<path d="M10 4a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"/><path d="M12 9v7"/>',
@@ -540,14 +564,14 @@ async function loadHistory(){
   hist=null;render();
   if(mode!=="cloud")return;
   try{
-    const r=await sb.from("days").select("day,data").order("day",{ascending:false}).limit(60);
+    const r=await sb.from("days").select("day,data").eq("branch",branch).order("day",{ascending:false}).limit(60);
     if(r.error)throw r.error;
     hist=r.data.map(x=>({date:x.day,d:x.data||{}}));
   }catch(e){hist="error";}
   render();
 }
 function report(){
-  const R=["Habib Beirut · "+nice(viewDate),""];
+  const R=[((BRANCH.find(b=>b[0]===branch)||[])[1]||"Habib Beirut")+" · "+nice(viewDate),""];
   const sg=k=>{const s=g(day,"sign",k);return "  "+t("resp")+": "+(s&&s.at?(s.by||"")+" "+hm(s.at):t("notSigned"));};
   for(const a in TEMP){R.push(t("tTemp",L(TEMP[a].label)).toUpperCase()+" (°C)  "+SLOTS.map(slotL).join(" / "));
     for(const [id,nm] of TEMP[a].eq){R.push("  "+L(nm)+": "+SLOTS.map(s=>{const v=g(day,"temp",a,id,"s"+s,"v");return typeof v==="number"?v:"–";}).join(" / ")+(g(day,"temp",a,id,"obs")?"  | "+g(day,"temp",a,id,"obs"):""));}
@@ -564,7 +588,7 @@ function report(){
 
 /* ---------- cash closing sheet ---------- */
 const PAY=[["cb","pCb"],["tr","pTr"],["amex","pAmex"],["esp","pEsp"]];
-const BRANCH=[["malakoff","Habib Beirut Malakoff"],["bistro","Habib Beirut Bistro"]];
+
 const isNum=v=>typeof v==="number"&&isFinite(v);
 const r2=x=>Math.round(x*100)/100;
 const moneyT=v=>v.toLocaleString(LOCALE[LI],{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
@@ -586,7 +610,7 @@ function vCash(){
   const ro=readOnly(),s=cashStats(day),c=s.c,dis=ro?" disabled":"";
   const amt=(v,cls)=>isNum(v)?'<span class="amt num '+(cls||"")+'">'+money(v)+'</span>':'<span class="amt empty">'+(ro?"–":esc(t("tap")))+'</span>';
   let h='<h2>'+esc(t("cashTitle"))+'</h2><h3>'+esc(t("branch"))+'</h3><div class="seg" role="group">'+
-    BRANCH.map(b=>'<button data-act="branch" data-v="'+b[0]+'" aria-pressed="'+(c.branch===b[0])+'"'+dis+'>'+esc(b[1])+'</button>').join("")+'</div>';
+    '<span class="chip">'+esc((BRANCH.find(b=>b[0]===branch)||["",""])[1])+'</span></div>';
   h+='<h3>'+esc(t("payTitle"))+'</h3><div class="card list">'+PAY.map(p=>{const e=g(c,"pay",p[0])||{};
     return '<button class="crow" data-act="pay" data-id="'+p[0]+'"'+dis+'><span>'+esc(t(p[1]))+(isNum(e.n)?'<small>'+esc(t("nTx",e.n))+'</small>':"")+'</span>'+amt(e.a)+'</button>';}).join("")+
     '<div class="crow total"><b>'+esc(t("totalPay"))+'</b><span class="amt num">'+money(s.total)+'</span></div></div>';
@@ -635,7 +659,7 @@ function cashAct(a,d){
   return true;
 }
 function cashReport(R){
-  const s=cashStats(day),c=s.c,m=v=>isNum(v)?moneyT(v):"–",br=BRANCH.find(b=>b[0]===c.branch);
+  const s=cashStats(day),c=s.c,m=v=>isNum(v)?moneyT(v):"–",br=BRANCH.find(b=>b[0]===branch);
   R.push(t("cashTitle").toUpperCase()+(br?" · "+br[1]:""));
   for(const p of PAY){const e=g(c,"pay",p[0])||{};R.push("  "+t(p[1])+": "+m(e.a)+(isNum(e.n)?" ("+t("nTx",e.n)+")":""));}
   R.push("  "+t("totalPay")+": "+m(s.total),"  "+t("fOpen")+": "+m(s.open),"  "+t("fClose")+": "+m(s.close),"  "+t("fExp")+": "+m(s.exp),"  "+t("fGap")+": "+m(s.gap));
@@ -722,6 +746,8 @@ document.addEventListener("click",ev=>{
   else if(a==="tod")setDate(today);
   else if(a==="name")nameSheet();
   else if(a==="signin")signIn();
+  else if(a==="acct"){const pw=($("f-pass")||{}).value||"";acct=d.v;loginErr="";render();if($("f-pass")){$("f-pass").value=pw;$("f-pass").focus();}}
+  else if(a==="setbranch")setBranch(d.v);
   else if(a==="signout")signOut();
   else if(a==="lang")langSheet();
   else if(a==="setlang"){LI=Number(d.i);try{localStorage.setItem("hb:lang",LANGS[LI]);}catch(e){}applyLang();closeSheet();render();}

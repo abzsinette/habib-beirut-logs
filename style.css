@@ -192,3 +192,6 @@ nav.tabs a[aria-current="page"]{color:var(--accent)}
 .login label{font-size:13px;font-weight:600;color:var(--muted)}
 .login input{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px;font-size:17px}
 .login .err{margin:0;color:var(--crit);font-size:14px;font-weight:600}
+.login .lbl{font-size:13px;font-weight:600;color:var(--muted)}
+.brsw{margin-top:8px}
+.brsw button{flex:1}
