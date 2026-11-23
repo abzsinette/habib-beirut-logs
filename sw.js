@@ -1,6 +1,6 @@
-/* Lets the app open even without wifi. Always tries the internet first, falls back to the saved copy.
-   Change VERSION whenever you upload new files, so phones pick up the update. */
-const VERSION = "hb-v5";
+/* Lets the app open even without wifi. Always asks the internet for the newest files first, falls back to the saved copy.
+   When you upload new files: change VERSION here, and the ?v= number in index.html. */
+const VERSION = "hb-v6";
 const FILES = ["./", "index.html", "style.css", "app.js", "config.js", "manifest.webmanifest", "icon-192.png", "icon-512.png", "logo.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => {
@@ -10,7 +10,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(e.request.url);
   if (e.request.method !== "GET" || url.hostname.endsWith("supabase.co")) return; /* database calls: never cached */
   e.respondWith(
-    fetch(e.request).then(res => {
+    fetch(e.request, { cache: "no-cache" }).then(res => {
       const copy = res.clone();
       caches.open(VERSION).then(c => c.put(e.request, copy));
       return res;
