@@ -119,14 +119,14 @@ const T={
  fExp:["Expected at closing","Attendu à la clôture","المتوقَّع عند الإقفال"],
  fExpHint:["Start + cash − purchases","Début + espèces − achats","البداية + النقد − المشتريات"],
  fGap:["Float difference","Écart de fonds de caisse","فرق الصندوق"],
- fGapHint:["Counted − expected","Compté − attendu","المعدود − المتوقَّع"],
+ fGapHint:["Counted − total after purchases","Compté − total après achats","المعدود − المجموع بعد المشتريات"],
  buyTitle:["Purchases (if needed)","Achats (si nécessaire)","المشتريات (عند الحاجة)"],
  buyAdd:["Add a purchase","Ajouter un achat","إضافة عملية شراء"],
  buyLabel:["What was bought","Désignation de l'achat","وصف المشتريات"],
  buyNone:["No purchases recorded.","Aucun achat enregistré.","لا مشتريات مسجّلة."],
  totalBuy:["Total purchases","Total des achats","مجموع المشتريات"],
  totalAfter:["Total after purchases","Total caisse après achats","مجموع الصندوق بعد المشتريات"],
- totalAfterHint:["Takings − purchases","Encaissements − achats","المقبوضات − المشتريات"],
+ totalAfterHint:["Start + takings − purchases","Début + encaissements − achats","البداية + المقبوضات − المشتريات"],
  del:["Delete","Supprimer","حذف"],
  tCash:["Cash closing","Clôture de caisse","إقفال الصندوق"],
  gapAlert:["Cash float difference of {0}","Écart de caisse de {0}","فرق في الصندوق بقيمة ⁦{0}⁩"],
@@ -150,6 +150,30 @@ const T={
  histBtn:["See past days","Voir les jours passés","عرض الأيام السابقة"],
  tQty:["Enter the item and a quantity of at least 1.","Saisissez l'article et une quantité d'au moins 1.","أدخل الصنف وكمية لا تقل عن 1."],
  cRestAm:["Restaurant AM","Restaurant matin","المطعم صباحاً"],cRestPm:["Restaurant PM","Restaurant soir","المطعم مساءً"],
+ briefTitle:["Today's briefing","Briefing du jour","اجتماع اليوم"],
+ writeBrief:["Write the briefing","Rédiger le briefing","كتابة الاجتماع"],
+ edit:["Edit","Modifier","تعديل"],
+ noBrief:["No briefing for today yet.","Pas encore de briefing pour aujourd'hui.","لا يوجد اجتماع لليوم بعد."],
+ briefBy:["Briefing written by {0}","Briefing rédigé par {0}","كتب الاجتماع: {0}"],
+ briefSaved:["Briefing saved.","Briefing enregistré.","تم حفظ الاجتماع."],
+ conducted:["Conducted by","Animé par","يديره"],conductedBy:["By {0}","Par {0}","بإدارة {0}"],
+ btime:["Briefing time","Heure du briefing","وقت الاجتماع"],
+ team:["Team","Équipe","الفريق"],cdr:["Chef de rang","Chef de rang","رئيس القسم"],waiter:["Waiter","Serveur","نادل"],
+ barP:["Bar","Bar","البار"],cashier:["Cashier","Caisse","الصندوق"],section:["Section","Section","القسم"],
+ i86:["86 items (not available)","Articles 86 (indisponibles)","أصناف غير متوفرة (86)"],
+ i86Hint:["One per line.","Un par ligne.","صنف في كل سطر."],
+ target:["Today's target","Objectif du jour","هدف اليوم"],
+ targetHint:["What to push or upsell today, one per line.","Ce qu'il faut proposer ou mettre en avant, un par ligne.","ما يجب ترويجه اليوم، صنف في كل سطر."],
+ goal:["Our goal","Notre objectif","هدفنا"],
+ forDay:["For","Pour","لِـ"],tomorrow:["Tomorrow","Demain","غداً"],branchesL:["Branches","Branches","الفروع"],
+ motto:["We are not a team because we work together. We are a team because we respect, trust and care for each other.","Nous ne sommes pas une équipe parce que nous travaillons ensemble. Nous sommes une équipe parce que nous nous respectons, nous nous faisons confiance et prenons soin les uns des autres.","لسنا فريقاً لأننا نعمل معاً، بل نحن فريق لأننا نحترم بعضنا ونثق ببعضنا ونهتم ببعضنا."],
+ fEnd:["Float at end of day","Fonds de caisse fin de journée","رصيد الصندوق في نهاية اليوم"],
+ fEndAuto:["Same as total after purchases · carried to tomorrow","Égal au total après achats · reporté au lendemain","يساوي المجموع بعد المشتريات · يُنقل إلى الغد"],
+ fEndSet:["Changed by {0} · carried to tomorrow","Modifié par {0} · reporté au lendemain","عدّله {0} · يُنقل إلى الغد"],
+ fEndHelp:["This amount becomes tomorrow's starting float. Change it only if money left the till, for example a bank deposit. Leave it empty to use the total after purchases.","Ce montant devient le fonds de départ du lendemain. Ne le modifiez que si de l'argent a quitté la caisse, par exemple un dépôt en banque. Laissez vide pour utiliser le total après achats.","يصبح هذا المبلغ رصيد بداية الغد. لا تعدّله إلا إذا خرج مال من الصندوق، مثل إيداع في البنك. اتركه فارغاً لاستخدام المجموع بعد المشتريات."],
+ carriedFrom:["Carried over from {0}","Reporté du {0}","منقول من {0}"],
+ closingTitle:["Closing","Clôture","الإقفال"],
+ carryFoot:["The float at end of day becomes the next day's starting amount automatically. Tap the starting amount to change it if needed.","Le fonds de caisse fin de journée devient automatiquement le montant de départ du lendemain. Touchez le montant de départ pour le corriger si besoin.","يصبح رصيد نهاية اليوم تلقائياً مبلغ البداية في اليوم التالي. اضغط على مبلغ البداية لتعديله عند الحاجة."],
  rNone:["none","aucun","لا شيء"],rChecked:["{0}/{1} checked","{0}/{1} contrôlés","{0}/{1} تم فحصها"]
 };
 const t=(k,...a)=>{const row=T[k];let s=row?row[LI]:k;a.forEach((v,i)=>{s=s.split("{"+i+"}").join(v);});return s;};
@@ -260,6 +284,12 @@ const REST=[
 const REST_HEADS={0:["Indoor","Intérieur","الداخل"],22:["Terrace","Terrasse","التراس"]};
 const CHECK=Object.assign({restAm:{label:"cRestAm",items:REST,heads:REST_HEADS},restPm:{label:"cRestPm",items:REST,heads:REST_HEADS}},CHECK0);
 const STOCK=[
+  [["Fridge, always in stock","Frigo, toujours en stock","البراد، أصناف ثابتة"],[
+   ["fattoush","fattouche","فتوش"],["hummus","houmous","حمص"],["moussaka","moussaka","مسقعة"],["hummus pesto","houmous pesto","حمص بالبيستو"],
+   ["eggplant purée","purée d'aubergine","متبل"],["labneh","labné","لبنة"],["tabbouleh","taboulé","تبولة"]],"fr"],
+  [["Sauces","Sauces","الصلصات"],[
+   ["garlic cream","crème à l'ail","كريمة الثوم"],["lemon oil","huile citron","زيت وليمون"],["fattoush dressing","sauce fattouche","صلصة الفتوش"],
+   ["sesame cream (falafel)","crème de sésame (falafel)","طراطور (فلافل)"]],"sc"],
   [["Drinks","Boissons","المشروبات"],[
    ["espresso beans","café en grains (espresso)","حبوب إسبريسو"],["fresh milk","lait frais","حليب طازج"],["almond milk","lait d'amande","حليب اللوز"],["coconut milk","lait de coco","حليب جوز الهند"],["tea bags","sachets de thé","أكياس شاي"],["chocolate powder","chocolat en poudre","بودرة الشوكولا"],["lebanese coffee","café libanais","قهوة لبنانية"],["Coca-Cola / Zero","Coca-Cola / Zero","كوكا كولا / زيرو"],["Sprite","Sprite","سبرايت"],["Fanta","Fanta","فانتا"],["ice tea","ice tea","آيس تي"],["soda","soda","صودا"],["red bull","Red Bull","ريد بُل"],["ginger ale","ginger ale","جنجر إيل"],["non alcoholic beer","bière sans alcool","بيرة بدون كحول"],["water big","eau grande","مياه كبيرة"],["water small","eau petite","مياه صغيرة"],["sparkling water 1/2","eau gazeuse 1/2","مياه غازية 1/2"],["sparkling water 1","eau gazeuse 1","مياه غازية 1"]]],
   [["Fruit and mixes","Fruits et préparations","الفواكه والخلطات"],[
@@ -267,7 +297,9 @@ const STOCK=[
   [["Sweets","Desserts","الحلويات"],[
    ["maamoul bl ghazel","maamoul bl ghazel","معمول بالغزل"],["oum ali / habib osmaliyeh","oum ali / habib osmaliyeh","أم علي / عثملية حبيب"],["mayel ya ghzayel","mayel ya ghzayel","مايل يا غزيّل"],["tarte debes / almond tarte","tarte debes / tarte aux amandes","تارت دبس / تارت لوز"],["mafrouke & pistachio","mafrouke & pistache","مفروكة وفستق"],["halawet el jeben","halawet el jeben","حلاوة الجبن"],["fondant","fondant","فوندان"],["cheese knefe","knefe au fromage","كنافة بالجبن"]]]
 ];
-const STOCK_FLAT=[];STOCK.forEach((grp,gi)=>grp[1].forEach((n,ii)=>STOCK_FLAT.push(["k"+gi+"_"+ii,n])));
+/* ids stay the same when groups are added: the original three groups keep k0, k1, k2 */
+let OLD_GI=0;STOCK.forEach(grp=>{if(!grp[2])grp[2]="k"+(OLD_GI++);});
+const STOCK_FLAT=[];STOCK.forEach(grp=>grp[1].forEach((n,ii)=>STOCK_FLAT.push([grp[2]+"_"+ii,n])));
 const CLEAN={cuisine:["Kitchen","Cuisine","المطبخ"],toilettes:["Toilets","Toilettes","الحمّامات"]};
 const VIEWS=["today","temperatures","bar","cleaning","cash","meals","history"];
 const ROLLOVER_H=5; /* a service day runs until 05:00, so a closing done after midnight stays on the right day */
@@ -297,7 +329,7 @@ const CFG=window.HB_CONFIG||{};
 let today=serviceDay(), viewDate=today, day={}, view="today";
 let sub={temperatures:"bar",bar:"open",cleaning:"cuisine"};
 let name="", mode="loading", cantSave=false, slow=false, online=true, loginBusy=false, loginErr="";
-let branch="", myBranch="", isMgr=false, acct="malakoff", allDays=null;
+let branch="", myBranch="", isMgr=false, acct="malakoff", allDays=null, carry=null, briefDraft=null;
 let sb=null, chan=null, slowTimer=null, retryTimer=null, flushing=false, queue={};
 let hist=null, sheetSave=null, afterName=null, mem={};
 try{name=localStorage.getItem("hb:name")||"";}catch(e){}
@@ -321,6 +353,17 @@ async function fetchDay(date){
   const r=await sb.from("days").select("data").eq("branch",branch).eq("day",date).maybeSingle();
   if(r.error)throw r.error;
   return r.data&&r.data.data?r.data.data:{};
+}
+async function fetchCarry(br,date){
+  const r=await sb.from("days").select("day,data").eq("branch",br).lt("day",date).order("day",{ascending:false}).limit(14);
+  if(r.error)throw r.error;
+  for(const x of (r.data||[])){const c=(x.data&&x.data.cash)||{},v=isNum(c.carry)?c.carry:c.after;if(isNum(v))return{v,date:x.day};}
+  return null;
+}
+async function loadCarry(){
+  const br=branch,date=viewDate;carry=null;
+  if(mode!=="cloud"||br==="all")return;
+  try{const c=await fetchCarry(br,date);if(br===branch&&date===viewDate){carry=c;render();}}catch(e){}
 }
 async function fetchAll(date){
   const r=await sb.from("days").select("branch,data").eq("day",date);
@@ -348,6 +391,7 @@ async function loadDay(){
     if(date!==viewDate||br!==branch||flushing||!pl.new||!pl.new.data||pl.new.branch!==br)return;
     day=useServer(date,pl.new.data);render();
   }).subscribe();
+  loadCarry();
   try{const data=await fetchDay(date);if(date!==viewDate||br!==branch)return;clearTimeout(slowTimer);slow=false;online=true;if(!flushing)day=useServer(date,data);}
   catch(e){if(date!==viewDate||br!==branch)return;clearTimeout(slowTimer);slow=true;}
   render();
@@ -357,6 +401,13 @@ async function refresh(){ /* safety net if live updates are missed */
   if(branch==="all"){const date=viewDate;try{const o=await fetchAll(date);if(date===viewDate&&branch==="all"){allDays=o;slow=false;render();}}catch(e){}return;}
   const date=viewDate,br=branch;
   try{const data=await fetchDay(date);if(date===viewDate&&br===branch&&!flushing){day=useServer(date,data);slow=false;online=true;render();}}catch(e){}
+}
+function writeTo(br,date,p){
+  if(mode!=="cloud")return;
+  const k=br+"|"+date;queue[k]=merge(clone(queue[k]||{}),clone(p));saveQueue();
+  if(br===branch&&date===viewDate)merge(day,clone(p));
+  if(branch==="all"&&date===viewDate&&allDays){allDays[br]=merge(clone(allDays[br]||{}),clone(p));}
+  render();flush();
 }
 function patch(p){
   if(readOnly())return;
@@ -412,15 +463,19 @@ async function startCloud(){
 function setBranch(b){if(!isMgr||b===branch)return;branch=b;try{localStorage.setItem("hb:branch",b);}catch(e){}hist=null;loadDay();if(view==="history")loadHistory();}
 async function signOut(){closeSheet();try{await sb.auth.signOut();}catch(e){}mode="login";isMgr=false;branch="";if(chan){sb.removeChannel(chan);chan=null;}render();}
 function vOverview(){
-  let h='<h2>'+esc(t("bothTitle"))+'</h2><p class="sub">'+esc(t("bothSub"))+'</p>';
+  let h='<h2>'+esc(t("bothTitle"))+'</h2><p class="sub">'+esc(t("bothSub"))+'</p>'+
+    (viewDate===today?'<button class="btn" data-act="brief">'+esc(t("writeBrief"))+'</button>':"");
   if(!allDays)return h+'<div class="banner">'+esc(t("connecting"))+'</div>';
   for(const [br,full] of BRANCH){
-    const d=allDays[br]||{},a=attention(d,viewDate),cs=cashStats(d);
+    const d=allDays[br]||{},a=attention(d,viewDate),cs=cashStats(d,(d===day)?carry:null);
     let tf=0,tt=0;for(const ar in TEMP){const x=tempStats(d,ar);tf+=x.filled;tt+=x.total;}
     let cd=0,ct=0;for(const k in CHECK){cd+=checkDone(d,k);ct+=CHECK[k].items.length;}
     let cl=0;for(const ar in CLEAN)cl+=cleanDone(d,ar);
     const chip=(lab,n,tot)=>'<span class="chip'+(n>=tot?" ok":"")+'">'+esc(lab)+' '+ltr(n+"/"+tot)+'</span>';
-    h+='<h3>'+esc(full)+'</h3><div class="card list"><div class="hrow"><span class="chips num">'+
+    const bf=d.brief;
+    h+='<h3>'+esc(full)+'</h3><div class="card list">'+
+      '<div class="attn"><span class="dot '+(briefHas(bf)?"ok":"")+'"></span><span>'+esc(briefHas(bf)?t("briefBy",bf.by||bf.conducted||""):t("noBrief"))+(briefHas(bf)&&bf.target?'<small>'+esc(t("target"))+': '+esc(lines(bf.target).join(", "))+'</small>':"")+'</span></div>'+
+      '<div class="hrow"><span class="chips num">'+
       chip(t("hTemp"),tf,tt)+chip(t("hCheck"),cd,ct)+chip(t("hClean"),cl,HOURS.length*2)+
       '<span class="chip">'+esc(t("totalPay"))+' '+ltr(esc(moneyT(cs.total)))+'</span>'+
       '<span class="chip">'+esc(t("tMeals"))+' '+mealList(d).length+'</span></span></div>'+
@@ -509,7 +564,7 @@ function attention(d,date){
   if(sk.out.length)a.push({c:"crit",t:t("outStock"),s:sk.out.join(", "),go:["bar","stock"]});
   if(sk.low.length)a.push({c:"",t:t("lowStock"),s:sk.low.join(", "),go:["bar","stock"]});
   const mw=mealWaiting(d);if(mw)a.push({c:"",t:t("mealWait",mw),s:t("modSign"),go:["meals",""]});
-  const cs=cashStats(d);
+  const cs=cashStats(d,(d===day)?carry:null);
   if(cs.gap!==null&&cs.gap!==0)a.push({c:"crit",t:t("gapAlert",moneyT(cs.gap)),s:t("gapSub"),go:["cash",""]});
   return a;
 }
@@ -521,6 +576,7 @@ function tile(title,n,total,go,alert){
 function vToday(){
   const a=attention(day,viewDate),tb=tempStats(day,"bar"),tc=tempStats(day,"cuisine"),sk=stockStats(day);
   let h='<h2>'+esc(viewDate===today?t("glance"):t("daySum"))+'</h2>';
+  h+=briefCard(day.brief,isMgr&&viewDate===today);
   h+='<h3>'+esc(t("attention"))+'</h3><div class="card list">';
   if(!a.length)h+='<div class="attn"><span class="dot ok"></span><span>'+esc(t("allGood"))+'</span></div>';
   else h+=a.map(x=>'<button class="attn" data-act="go" data-view="'+x.go[0]+'" data-sub="'+x.go[1]+'"><span class="dot '+x.c+'"></span><span>'+esc(x.t)+'<small>'+esc(x.s)+'</small></span></button>').join("");
@@ -530,7 +586,7 @@ function vToday(){
     Object.keys(CHECK).map(k=>tile(t("tCheck",t(CHECK[k].label)),checkDone(day,k),CHECK[k].items.length,["bar",k])).join("")+
     tile(t("tStock"),sk.n,STOCK_FLAT.length,["bar","stock"])+
     Object.keys(CLEAN).map(k=>tile(t("tClean",L(CLEAN[k])),cleanDone(day,k),HOURS.length,["cleaning",k])).join("")+
-    (c=>tile(t("tCash"),c.filled,6,["cash",""],c.gap!==null&&c.gap!==0))(cashStats(day))+
+    (c=>tile(t("tCash"),c.filled,6,["cash",""],c.gap!==null&&c.gap!==0))(cashStats(day,carry))+
     '<button class="tile" data-act="go" data-view="meals" data-sub=""><span class="t">'+esc(t("tMeals"))+'</span><span class="c num">'+t("mealCount","<b>"+mealList(day).length+"</b>")+'</span></button>'+
   '</div><button class="btn ghost" data-act="copy">'+esc(t("copy"))+'</button><a class="btn ghost" href="#history">'+esc(t("histBtn"))+'</a>';
   return h;
@@ -623,6 +679,7 @@ function report(){
   for(const a in CLEAN){R.push(t("tClean",L(CLEAN[a])).toUpperCase());
     for(const h of HOURS){const e=g(day,"clean",a,"h"+h)||{};R.push("  "+h+":00  "+(e.at?(e.by||"")+" "+hm(e.at):"–")+(e.note?" | "+e.note:""));}
     R.push(sg("clean_"+a),"");}
+  if(briefHas(day.brief)){const b=day.brief;R.push(t("briefTitle").toUpperCase());if(b.target)R.push("  "+t("target")+": "+lines(b.target).join(", "));if(b.items86)R.push("  "+t("i86")+": "+lines(b.items86).join(", "));R.push("");}
   mealReport(R);cashReport(R);R.push(sg("cash"));
   return R.join("\n");
 }
@@ -634,21 +691,26 @@ const isNum=v=>typeof v==="number"&&isFinite(v);
 const r2=x=>Math.round(x*100)/100;
 const moneyT=v=>v.toLocaleString(LOCALE[LI],{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
 const money=v=>ltr(esc(moneyT(v)));
-function cashStats(d){
+function cashStats(d,cr){
   const c=(d&&d.cash)||{},s={c,filled:0,total:0,buys:[],totalBuy:0};
   for(const [id] of PAY){const a=g(c,"pay",id,"a");if(isNum(a)){s.filled++;s.total+=a;}}
   const b=c.buys||{};for(const id in b){if(b[id]&&isNum(b[id].amt)){s.buys.push(Object.assign({id},b[id]));s.totalBuy+=b[id].amt;}}
   s.buys.sort((x,y)=>String(x.at)<String(y.at)?-1:1);
-  s.total=r2(s.total);s.totalBuy=r2(s.totalBuy);s.after=r2(s.total-s.totalBuy);
-  s.open=g(c,"open","v");s.close=g(c,"close","v");
+  s.total=r2(s.total);s.totalBuy=r2(s.totalBuy);
+  s.close=g(c,"close","v");
+  /* start of day: typed in, or carried over from the last day's "total after purchases" */
+  s.open=g(c,"open","v");s.carried=null;
+  if(!isNum(s.open)&&cr&&isNum(cr.v)){s.open=cr.v;s.carried=cr.date;}
   if(isNum(s.open))s.filled++;if(isNum(s.close))s.filled++;
-  const esp=g(c,"pay","esp","a");
-  s.exp=isNum(s.open)?r2(s.open+(isNum(esp)?esp:0)-s.totalBuy):null;
-  s.gap=isNum(s.close)&&s.exp!==null?r2(s.close-s.exp):null;
+  s.after=r2((isNum(s.open)?s.open:0)+s.total-s.totalBuy);
+  s.exp=s.after;
+  /* end-of-day float: the total after purchases, unless someone changed it (e.g. money taken to the bank) */
+  s.endSet=isNum(g(c,"end","v"));s.end=s.endSet?g(c,"end","v"):s.after;
+  s.gap=isNum(s.close)?r2(s.close-s.after):null;
   return s;
 }
 function vCash(){
-  const ro=readOnly(),s=cashStats(day),c=s.c,dis=ro?" disabled":"";
+  const ro=readOnly(),s=cashStats(day,carry),c=s.c,dis=ro?" disabled":"";
   const amt=(v,cls)=>isNum(v)?'<span class="amt num '+(cls||"")+'">'+money(v)+'</span>':'<span class="amt empty">'+(ro?"–":esc(t("tap")))+'</span>';
   let h='<h2>'+esc(t("cashTitle"))+'</h2><h3>'+esc(t("branch"))+'</h3><div class="seg" role="group">'+
     '<span class="chip">'+esc((BRANCH.find(b=>b[0]===branch)||["",""])[1])+'</span></div>';
@@ -656,15 +718,17 @@ function vCash(){
     return '<button class="crow" data-act="pay" data-id="'+p[0]+'"'+dis+'><span>'+esc(t(p[1]))+(isNum(e.n)?'<small>'+esc(t("nTx",e.n))+'</small>':"")+'</span>'+amt(e.a)+'</button>';}).join("")+
     '<div class="crow total"><b>'+esc(t("totalPay"))+'</b><span class="amt num">'+money(s.total)+'</span></div></div>';
   h+='<h3>'+esc(t("floatTitle"))+'</h3><div class="card list">'+
-    '<button class="crow" data-act="float" data-k="open"'+dis+'><span>'+esc(t("fOpen"))+'</span>'+amt(s.open)+'</button>'+
-    '<button class="crow" data-act="float" data-k="close"'+dis+'><span>'+esc(t("fClose"))+'</span>'+amt(s.close)+'</button>'+
-    '<div class="crow"><span>'+esc(t("fExp"))+'<small>'+esc(t("fExpHint"))+'</small></span><span class="amt num">'+(s.exp!==null?money(s.exp):"–")+'</span></div>'+
-    '<div class="crow total"><span><b>'+esc(t("fGap"))+'</b><small>'+esc(t("fGapHint"))+'</small></span><span class="amt num '+(s.gap===null?"":s.gap===0?"good":"bad")+'">'+(s.gap!==null?money(s.gap):"–")+'</span></div></div>';
+    '<button class="crow" data-act="float" data-k="open"'+dis+'><span>'+esc(t("fOpen"))+(s.carried?'<small>'+esc(t("carriedFrom",nice(s.carried)))+'</small>':"")+'</span>'+amt(s.open)+'</button></div>';
   h+='<h3>'+esc(t("buyTitle"))+'</h3><div class="card list">'+
     (s.buys.length?s.buys.map(b=>'<button class="crow" data-act="buy" data-id="'+esc(b.id)+'"'+dis+'><span>'+esc(b.label||"")+'<small>'+who(b)+" · "+hm(b.at)+'</small></span><span class="amt num">'+money(b.amt)+'</span></button>').join(""):'<div class="crow"><span class="mut">'+esc(t("buyNone"))+'</span></div>')+
-    '<div class="crow total"><b>'+esc(t("totalBuy"))+'</b><span class="amt num">'+money(s.totalBuy)+'</span></div>'+
-    '<div class="crow total"><span><b>'+esc(t("totalAfter"))+'</b><small>'+esc(t("totalAfterHint"))+'</small></span><span class="amt num">'+money(s.after)+'</span></div></div>'+
+    '<div class="crow total"><b>'+esc(t("totalBuy"))+'</b><span class="amt num">'+money(s.totalBuy)+'</span></div></div>'+
     (ro?"":'<button class="btn ghost" data-act="buy" data-id="">'+esc(t("buyAdd"))+'</button>');
+  h+='<h3>'+esc(t("closingTitle"))+'</h3><div class="card list">'+
+    '<div class="crow grand"><span><b>'+esc(t("totalAfter"))+'</b><small>'+esc(t("totalAfterHint"))+'</small></span><span class="amt num">'+money(s.after)+'</span></div>'+
+    '<button class="crow grand" data-act="float" data-k="end"'+dis+'><span><b>'+esc(t("fEnd"))+'</b><small>'+esc(s.endSet?t("fEndSet",(g(c,"end","by")||"")):t("fEndAuto"))+'</small></span><span class="amt num">'+money(s.end)+'</span></button>'+
+    '<button class="crow" data-act="float" data-k="close"'+dis+'><span>'+esc(t("fClose"))+'</span>'+amt(s.close)+'</button>'+
+    '<div class="crow total"><span><b>'+esc(t("fGap"))+'</b><small>'+esc(t("fGapHint"))+'</small></span><span class="amt num '+(s.gap===null?"":s.gap===0?"good":"bad")+'">'+(s.gap!==null?money(s.gap):"–")+'</span></div></div>'+
+    '<p class="foot">'+esc(t("carryFoot"))+'</p>';
   return h+signRow("cash");
 }
 const field=(id,label,val,mode)=>'<label for="'+id+'">'+esc(label)+'</label><input type="text" id="'+id+'" dir="'+(mode?"ltr":"auto")+'"'+(mode?' inputmode="'+mode+'"':"")+' autocomplete="off" maxlength="80" value="'+esc(val==null?"":val)+'">';
@@ -674,7 +738,8 @@ function paySheet(id){
 }
 function floatSheet(k){
   sheetSave={k};
-  openSheet('<h4>'+esc(t(k==="open"?"fOpen":"fClose"))+'</h4>'+field("f-amt",t("amount"),g(day,"cash",k,"v"),"decimal")+acts("savefloat",t("save")));
+  const cur=g(day,"cash",k,"v"),pre=(k==="open"&&!isNum(cur)&&carry)?carry.v:(k==="end"&&!isNum(cur))?cashStats(day,carry).after:cur;
+  openSheet('<h4>'+esc(t(k==="open"?"fOpen":k==="end"?"fEnd":"fClose"))+'</h4>'+(k==="end"?'<p>'+esc(t("fEndHelp"))+'</p>':"")+field("f-amt",t("amount"),pre,"decimal")+acts("savefloat",t("save")));
 }
 function buySheet(id){
   const e=(id&&g(day,"cash","buys",id))||{};sheetSave={id:id||""};
@@ -683,7 +748,17 @@ function buySheet(id){
 }
 /* "" = left empty, null = not a valid amount */
 const readAmt=()=>{const s=($("f-amt").value||"").trim().replace(/\s/g,"").replace(",",".").replace("€","");if(s==="")return"";const v=Number(s);return isNaN(v)||v<0||v>1e7?null:r2(v);};
+function saveAfter(){
+  if(readOnly())return;
+  const s=cashStats(day,carry);
+  if(g(day,"cash","after")!==s.after||g(day,"cash","carry")!==s.end)patch({cash:{after:s.after,carry:s.end}});
+}
 function cashAct(a,d){
+  const r=cashAct0(a,d);
+  if(r&&/^(savepay|savefloat|savebuy|delbuy)$/.test(a))saveAfter();
+  return r;
+}
+function cashAct0(a,d){
   if(a==="branch")withName(()=>patch({cash:{branch:g(day,"cash","branch")===d.v?null:d.v}}));
   else if(a==="pay")withName(()=>paySheet(d.id));
   else if(a==="float")withName(()=>floatSheet(d.k));
@@ -700,12 +775,12 @@ function cashAct(a,d){
   return true;
 }
 function cashReport(R){
-  const s=cashStats(day),c=s.c,m=v=>isNum(v)?moneyT(v):"–",br=BRANCH.find(b=>b[0]===branch);
+  const s=cashStats(day,carry),c=s.c,m=v=>isNum(v)?moneyT(v):"–",br=BRANCH.find(b=>b[0]===branch);
   R.push(t("cashTitle").toUpperCase()+(br?" · "+br[1]:""));
   for(const p of PAY){const e=g(c,"pay",p[0])||{};R.push("  "+t(p[1])+": "+m(e.a)+(isNum(e.n)?" ("+t("nTx",e.n)+")":""));}
-  R.push("  "+t("totalPay")+": "+m(s.total),"  "+t("fOpen")+": "+m(s.open),"  "+t("fClose")+": "+m(s.close),"  "+t("fExp")+": "+m(s.exp),"  "+t("fGap")+": "+m(s.gap));
+  R.push("  "+t("totalPay")+": "+m(s.total),"  "+t("fOpen")+": "+m(s.open)+(s.carried?" ("+t("carriedFrom",nice(s.carried))+")":""));
   for(const b of s.buys)R.push("  "+t("buyTitle")+": "+(b.label||"")+" "+m(b.amt));
-  R.push("  "+t("totalBuy")+": "+m(s.totalBuy),"  "+t("totalAfter")+": "+m(s.after));
+  R.push("  "+t("totalBuy")+": "+m(s.totalBuy),"  "+t("totalAfter")+": "+m(s.after),"  "+t("fEnd")+": "+m(s.end),"  "+t("fClose")+": "+m(s.close),"  "+t("fGap")+": "+m(s.gap));
 }
 
 /* ---------- staff meal sheet ---------- */
@@ -741,6 +816,87 @@ function mealReport(R){
   for(const m of mealList(day))R.push("  "+m.item+" × "+m.qty+" · "+(m.emp||"")+" "+hm(m.at)+" · "+(g(m,"mod","at")?t("modBy",m.mod.by||"",hm(m.mod.at)):t("modSign")+": –"));
   for(const k of [["meal_chef","headChef"],["meal_mgr","manager"]]){const s=g(day,"sign",k[0]);R.push("  "+t(k[1])+": "+(s&&s.at?(s.by||"")+" "+hm(s.at):t("notSigned")));}
   R.push("");
+}
+
+/* ---------- daily briefing (written by the manager, shown on both branches) ---------- */
+const BR_ROWS={cdr:3,waiters:4};
+function briefHas(b){return !!(b&&(b.target||b.items86||b.goal||b.conducted||(b.cdr||[]).some(x=>x&&x.n)||(b.waiters||[]).some(x=>x&&x.n)||b.bar||b.cashier));}
+function lines(s){return String(s||"").split(/\n|,/).map(x=>x.trim()).filter(Boolean);}
+function briefCard(b,editable){
+  if(!briefHas(b)){
+    return editable?'<div class="card brief empty"><div class="bhead"><b>'+esc(t("briefTitle"))+'</b></div><p>'+esc(t("noBrief"))+'</p><button class="btn sm" data-act="brief">'+esc(t("writeBrief"))+'</button></div>':"";
+  }
+  const team=[];
+  (b.cdr||[]).filter(x=>x&&x.n).forEach(x=>team.push([t("cdr"),x.n,x.s]));
+  (b.waiters||[]).filter(x=>x&&x.n).forEach(x=>team.push([t("waiter"),x.n,x.s]));
+  if(b.bar)team.push([t("barP"),b.bar,""]);
+  if(b.cashier)team.push([t("cashier"),b.cashier,""]);
+  const i86=lines(b.items86);
+  return '<div class="card brief"><div class="bhead"><b>'+esc(t("briefTitle"))+'</b><small>'+
+    esc([b.conducted?t("conductedBy",b.conducted):"",b.time||""].filter(Boolean).join(" · "))+'</small>'+
+    (editable?'<button class="mini" data-act="brief">'+esc(t("edit"))+'</button>':"")+'</div>'+
+    (b.target?'<div class="btarget"><span class="lbl">'+esc(t("target"))+'</span><p>'+esc(b.target).replace(/\n/g,"<br>")+'</p></div>':"")+
+    (i86.length?'<div class="bsec"><span class="lbl">'+esc(t("i86"))+'</span><div class="chips">'+i86.map(x=>'<span class="chip crit">'+esc(x)+'</span>').join("")+'</div></div>':"")+
+    (team.length?'<div class="bsec"><span class="lbl">'+esc(t("team"))+'</span><div class="bteam">'+team.map(r=>'<span class="role">'+esc(r[0])+'</span><span>'+esc(r[1])+(r[2]?' <span class="sect">· '+esc(t("section"))+' '+esc(r[2])+'</span>':"")+'</span>').join("")+'</div></div>':"")+
+    (b.goal?'<div class="bsec"><span class="lbl">'+esc(t("goal"))+'</span><p>'+esc(b.goal).replace(/\n/g,"<br>")+'</p></div>':"")+
+    '<p class="motto">'+esc(t("motto"))+'</p></div>';
+}
+function briefDefaults(){
+  const late=new Date().getHours()>=17;
+  return {forDay:late?"tomorrow":"today",target:(branch==="all"||!branch)?"both":branch};
+}
+function briefDate(f){return f==="tomorrow"?shift(today,1):today;}
+function briefTargets(x){return x==="both"?BRANCH.map(b=>b[0]):[x];}
+function readBriefForm(){
+  const v=id=>(($(id)||{}).value||"").trim();
+  const rows=(k,n)=>{const out=[];for(let i=0;i<n;i++)out.push({n:v("f-"+k+"n"+i),s:v("f-"+k+"s"+i)});return out;};
+  return {conducted:v("f-bcond"),time:v("f-btime"),cdr:rows("cdr",BR_ROWS.cdr),waiters:rows("wtr",BR_ROWS.waiters),
+    bar:v("f-bbar"),cashier:v("f-bcash"),items86:v("f-b86"),target:v("f-btarget"),goal:v("f-bgoal")};
+}
+async function briefLoad(){ /* fill the form with what is already saved for that day */
+  const o=briefDraft,date=briefDate(o.forDay),br=briefTargets(o.target)[0];
+  let b=null;
+  try{
+    if(br===branch&&date===viewDate)b=day.brief;
+    else if(branch==="all"&&date===viewDate&&allDays)b=(allDays[br]||{}).brief;
+    else b=(await fetchDayB(br,date)).brief;
+  }catch(e){}
+  const q=queue[br+"|"+date];if(q&&q.brief)b=merge(clone(b||{}),clone(q.brief));
+  if(briefDraft!==o)return;
+  o.data=clone(b||{});if(!o.data.conducted)o.data.conducted=name;o.loaded=true;briefSheet();
+}
+async function fetchDayB(br,date){
+  const r=await sb.from("days").select("data").eq("branch",br).eq("day",date).maybeSingle();
+  if(r.error)throw r.error;return (r.data&&r.data.data)||{};
+}
+function briefSheet(){
+  const o=briefDraft,b=o.data||{};
+  const segs=(act,opts,cur)=>'<div class="seg" role="group">'+opts.map(x=>'<button data-act="'+act+'" data-v="'+x[0]+'" aria-pressed="'+(cur===x[0])+'">'+esc(x[1])+'</button>').join("")+'</div>';
+  const row=(k,i,list,lab)=>{const r=(list||[])[i]||{};return '<div class="brow"><input type="text" id="f-'+k+'n'+i+'" maxlength="40" dir="auto" placeholder="'+esc(lab+" "+(i+1))+'" value="'+esc(r.n||"")+'"><input type="text" id="f-'+k+'s'+i+'" maxlength="12" dir="auto" placeholder="'+esc(t("section"))+'" value="'+esc(r.s||"")+'"></div>';};
+  let rowsC="",rowsW="";for(let i=0;i<BR_ROWS.cdr;i++)rowsC+=row("cdr",i,b.cdr,t("cdr"));for(let i=0;i<BR_ROWS.waiters;i++)rowsW+=row("wtr",i,b.waiters,t("waiter"));
+  const ta=(id,lab,hint,val)=>'<label for="'+id+'">'+esc(lab)+'</label>'+(hint?'<p class="hint">'+esc(hint)+'</p>':"")+'<textarea id="'+id+'" maxlength="600" dir="auto">'+esc(val||"")+'</textarea>';
+  openSheet('<h4>'+esc(t("writeBrief"))+'</h4>'+
+    '<label>'+esc(t("forDay"))+'</label>'+segs("bfor",[["today",t("today")+" · "+nice(today)],["tomorrow",t("tomorrow")+" · "+nice(shift(today,1))]],o.forDay)+
+    '<label>'+esc(t("branchesL"))+'</label>'+segs("btgt",[["both",t("both")]].concat(BRANCH.map(x=>[x[0],x[1].replace("Habib Beirut ","")])),o.target)+
+    (o.loaded?"":'<p class="hint">'+esc(t("histLoad"))+'</p>')+
+    ta("f-btarget",t("target"),t("targetHint"),b.target)+
+    ta("f-b86",t("i86"),t("i86Hint"),b.items86)+
+    '<label>'+esc(t("team"))+'</label><p class="hint">'+esc(t("cdr"))+'</p>'+rowsC+'<p class="hint">'+esc(t("waiter"))+'</p>'+rowsW+
+    field("f-bbar",t("barP"),b.bar,"")+field("f-bcash",t("cashier"),b.cashier,"")+
+    ta("f-bgoal",t("goal"),"",b.goal)+
+    field("f-bcond",t("conducted"),b.conducted,"")+field("f-btime",t("btime"),b.time,"")+
+    '<div class="acts">'+(briefHas(b)&&o.loaded?'<button class="btn danger" data-act="delbrief">'+esc(t("del"))+'</button>':'<button class="btn ghost" data-act="cancel">'+esc(t("cancel"))+'</button>')+'<button class="btn" data-act="savebrief"'+(o.loaded?"":" disabled")+'>'+esc(t("save"))+'</button></div>');
+  const f=$("f-btarget");if(f)f.blur();$("panel").scrollTop=0;
+}
+function briefAct(a,d){
+  if(a==="brief"){if(!isMgr)return true;briefDraft=Object.assign(briefDefaults(),{data:null,loaded:false});briefSheet();briefLoad();}
+  else if(a==="bfor"||a==="btgt"){const o=briefDraft;if(a==="bfor")o.forDay=d.v;else o.target=d.v;o.loaded=false;o.data=readBriefForm();briefSheet();briefLoad();}
+  else if(a==="savebrief"){const o=briefDraft,data=readBriefForm();
+    const b=Object.assign(data,stamp());const date=briefDate(o.forDay);
+    closeSheet();briefDraft=null;for(const br of briefTargets(o.target))writeTo(br,date,{brief:b});toast(t("briefSaved"));}
+  else if(a==="delbrief"){const o=briefDraft,date=briefDate(o.forDay);closeSheet();briefDraft=null;for(const br of briefTargets(o.target))writeTo(br,date,{brief:null});}
+  else return false;
+  return true;
 }
 
 /* ---------- sheets (dialogs) ---------- */
@@ -799,7 +955,7 @@ document.addEventListener("click",ev=>{
   else if(a==="open"){viewDate=d.date;loadDay();go("today");}
   else if(a==="reload")loadHistory();
   else if(a==="copy"){const txt=report();(navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast(t("tCopied")),()=>toast(t("tNoCopy")));}
-  else if(cashAct(a,d)||mealAct(a,d)){}
+  else if(cashAct(a,d)||mealAct(a,d)||briefAct(a,d)){}
   else if(a==="temp")withName(()=>tempSheet(sub.temperatures,d.eq,Number(d.slot)));
   else if(a==="step"){const s=sheetSave,v=readTemp();$("f-temp").value=v===null?(s.kind==="neg"?-18:3):Math.round((v+Number(d.d))*10)/10;}
   else if(a==="quick"){$("f-temp").value=d.v;}

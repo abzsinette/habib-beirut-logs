@@ -1,3 +1,9 @@
+/* Fonts are part of the app (fonts/ folder), so Mac, Windows, iPhone and Android all show the same letters. */
+@font-face{font-family:"HB Body";src:url("fonts/inter-400.woff?v=8") format("woff");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"HB Body";src:url("fonts/inter-500.woff?v=8") format("woff");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"HB Body";src:url("fonts/inter-600.woff?v=8") format("woff");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:"HB Body";src:url("fonts/inter-700.woff?v=8") format("woff");font-weight:700 900;font-style:normal;font-display:swap}
+@font-face{font-family:"HB Display";src:url("fonts/bricolage-700.woff?v=8") format("woff");font-weight:600 900;font-style:normal;font-display:swap}
 /* Layout idea: one phone-width column, sticky date header, bottom tab bar; each paper sheet becomes a list of large tap targets. */
 /* Habib Beirut colours: red and white. One light theme on purpose (it is a brand look, not a dark-mode app). */
 :root{
@@ -6,14 +12,24 @@
   --bg:#ffffff; --surface:#ffffff; --fill:#f8f0f0; --ink:#1c1416; --muted:#6b5c5f; --line:#ecdfe0;
   --accent:var(--red); --accent-soft:#fdecec; --on-accent:#ffffff;
   --ok:#17784a; --ok-soft:#e3f3ea; --warn:#9a5c00; --warn-soft:#fcf1dc; --crit:#a4161f; --crit-soft:#fde4e5;
-  --display:"Bricolage Grotesque","Noto Sans Arabic","Figtree",system-ui,sans-serif;
-  --body:"Figtree","Noto Sans Arabic",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --display:"HB Display","HB Body","Noto Sans Arabic",Arial,sans-serif;
+  --body:"HB Body","Noto Sans Arabic",Arial,sans-serif;
   --r:14px;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.4;-webkit-text-size-adjust:100%}
-button,input,textarea{font:inherit;color:inherit}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.4;-webkit-text-size-adjust:100%;text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-synthesis:none;font-feature-settings:"cv11" 0}
+/* same look for controls on every system (Windows otherwise adds its own borders, shadows and arrows) */
+button,input,textarea{font:inherit;color:inherit;letter-spacing:inherit;-webkit-appearance:none;appearance:none;border-radius:0;margin:0}
+input,textarea{background-clip:padding-box}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.75}
+input[type=password]::-ms-reveal,input::-ms-clear{display:none}
+textarea{scrollbar-width:thin}
+html{scrollbar-color:#d9c3c5 transparent;scrollbar-width:thin}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#d9c3c5;border-radius:8px}
+::-webkit-scrollbar-track{background:transparent}
 button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .wrap{max-width:600px;margin:0 auto;padding:0 16px}
@@ -210,3 +226,25 @@ body.mgr header.top .seg button[aria-pressed="true"]{background:var(--red);borde
 .badge{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;margin-inline-end:4px;vertical-align:1px}
 [dir="rtl"] .badge{letter-spacing:0}
 body.mgr .tabs a[aria-current="page"]{color:#231517}
+
+/* briefing */
+.brief{padding:14px;display:flex;flex-direction:column;gap:12px;border-color:var(--red);border-width:1.5px}
+.brief.empty p{margin:0;color:var(--muted);font-size:14px}
+.brief .bhead{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.brief .bhead b{font-family:var(--display);font-size:18px;color:var(--red)}
+.brief .bhead small{color:var(--muted);font-size:13px;flex:1}
+.brief .lbl{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red-dark);margin-bottom:4px}
+[dir="rtl"] .brief .lbl{letter-spacing:0}
+.brief p{margin:0}
+.btarget{background:var(--accent-soft);border-radius:12px;padding:10px 12px;font-size:17px;font-weight:600}
+.bteam{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:15px}
+.bteam .role{color:var(--muted);font-size:13px;padding-top:2px}
+.bteam .sect{color:var(--muted);font-size:13px}
+.motto{font-size:12.5px;color:var(--muted);font-style:italic;border-top:1px solid var(--line);padding-top:10px}
+.panel .hint{margin:-8px 0 0;font-size:13px;color:var(--muted)}
+.brow{display:grid;grid-template-columns:1fr 92px;gap:8px}
+.brow input{font-size:16px !important;padding:10px !important}
+.crow.grand{background:var(--accent-soft)}
+.crow.grand .amt{font-size:19px;color:var(--red-dark)}
+.panel>*{flex-shrink:0}
+.panel .seg{flex-wrap:wrap}
